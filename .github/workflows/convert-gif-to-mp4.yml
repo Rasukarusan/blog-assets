@@ -47,8 +47,10 @@ jobs:
       - name: Commit and push
         run: |
           git status
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git commit -m "convert gif to mp4"
-          git push origin master
+          if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add -A
+            git commit -m "convert gif to mp4"
+            git push origin master
+          fi
