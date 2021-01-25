@@ -6,7 +6,7 @@ on:
       - master
 jobs:
   build:
-    name: Create Release
+    name: Convert GIF
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,13 +29,13 @@ jobs:
             case "$status" in
               'A') # add
                 echo 'add'
-                ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
+                [ ! -e $mp4 ]; && ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
                 ;;
               [R]*) # rename
                 echo 'rename'
                 read pre_mp4 <<< "$(echo $target | awk '{print $2}' | sed 's/\.[^\.]*$/.mp4/' )"
                 [ -e $pre_mp4 ] && git rm $pre_mp4
-                ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
+                [ ! -e $mp4 ]; && ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
                 ;;
               'D') # delete
                 echo 'delete'
@@ -52,6 +52,3 @@ jobs:
           git add -A
           git commit -m "convert gif to mp4"
           git push origin master
-      # - name: Convert
-      # - run: ffmpeg -i input.avi output.mkv
-      #
