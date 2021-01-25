@@ -29,13 +29,13 @@ jobs:
             case "$status" in
               'A') # add
                 echo 'add'
-                [ ! -e $mp4 ]; && ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
+                [ ! -e $mp4 ] && ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
                 ;;
               [R]*) # rename
                 echo 'rename'
                 read pre_mp4 <<< "$(echo $target | awk '{print $2}' | sed 's/\.[^\.]*$/.mp4/' )"
                 [ -e $pre_mp4 ] && git rm $pre_mp4
-                [ ! -e $mp4 ]; && ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
+                [ ! -e $mp4 ] && ffmpeg -i $gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" $mp4 </dev/null
                 ;;
               'D') # delete
                 echo 'delete'
