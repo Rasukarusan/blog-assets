@@ -1,0 +1,29 @@
+name: Convert GIF To MP4
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup ffmpeg
+        uses: FedericoCarboni/setup-ffmpeg@v1-beta
+        id: setup-ffmpeg
+
+      - name: git status
+        run: |
+          pwd
+          git status
+          ffmpeg -i xcode-tips/touch.gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" video.mp4
+          ls
+      # - name: Convert
+      # - run: ffmpeg -i input.avi output.mkv
+      #
