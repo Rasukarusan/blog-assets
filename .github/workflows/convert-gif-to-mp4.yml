@@ -18,12 +18,22 @@ jobs:
         uses: FedericoCarboni/setup-ffmpeg@v1-beta
         id: setup-ffmpeg
 
-      - name: git status
+      - name: Convert
         run: |
-          pwd
-          git status
-          ffmpeg -i xcode-tips/touch.gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" video.mp4
-          ls
+          git show --pretty="format:" --name-only HEAD^ | grep '.gif$' | while read target; do
+            filename=$(basename $target | sed 's/\.[^\.]*$//')
+            dir=$(dirname $target)
+            printf "\e[31m===========$target============\e[m\n"
+            ffmpeg -i $target -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "${dir}/$filename.mp4" </dev/null
+          done
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "convert gif to mp4"
+          git push origin master
       # - name: Convert
       # - run: ffmpeg -i input.avi output.mkv
       #
